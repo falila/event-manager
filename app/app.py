@@ -20,7 +20,7 @@ events = [
 ]
 
 @app.route('/events')
-def test():
+def events():
     return jsonify(events)
 
 @app.route('/events', methods=['POST'])
