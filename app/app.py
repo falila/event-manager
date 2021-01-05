@@ -24,19 +24,19 @@ def test():
     return jsonify(events)
 
 @app.route('/events', methods=['POST'])
-def add_metric():
-    metric = request.get_json()
-    events.append(metric)
+def add_event():
+    event = request.get_json()
+    events.append(event)
     return {'id':len(events)}, 200
 
 @app.route('/events/<int:index>', methods=['PUT'])
-def update_metric(index): 
-    metric = request.get_json()
-    events[index] = metric
+def update_event(index): 
+    event = request.get_json()
+    events[index] = event
     return jsonify(events[index]), 200
 
 @app.route('/events/<int:index>', methods=['DELETE'])
-def delete_metric(index): 
+def delete_event(index): 
     events.pop(index)
     return 'None', 200
 
