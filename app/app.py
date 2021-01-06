@@ -1,44 +1,38 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
+from db.db import initialize_db
+from db.models import Event
 from type_data import EventKind, EventComponentTiming , PerformanceEvent
 
 app = Flask(__name__)
 app.debug = True
 
-events = [
-    {"tag": "ams_sold",
-    "type":" event type 1",
-    "env": "dev",
-    "data": ["timestamp", "created"],
-    "timestamp":"time",
-    },
-    {"tag": "vehicle_info_updated",
-    "type":" event type 2",
-    "env": "test",
-    "data": ["timestamp", "created"],
-    "timestamp":"time",
-    },
-]
+app.config['MONGODB_SETTINGS'] = {
+    'host' : ''
+}
+
+initialize_db(app)
 
 @app.route('/events')
 def events():
-    return jsonify(events)
+    events = Event.objects.to_json()
+    return Response(events, mimetype='application/json', status=200)
 
 @app.route('/events', methods=['POST'])
 def add_event():
-    event = request.get_json()
-    events.append(event)
-    return {'id':len(events)}, 200
+    body = request.get_json()
+    event =  Event(**body).save()    
+    return {'id': event.id}, 200
 
-@app.route('/events/<int:index>', methods=['PUT'])
-def update_event(index): 
-    event = request.get_json()
-    events[index] = event
-    return jsonify(events[index]), 200
+@app.route('/events/<id>', methods=['PUT'])
+def update_event(id): 
+    body = request.get_json()
+    Event.objects.get(id=id).update(**body)
+    return '', 200
 
-@app.route('/events/<int:index>', methods=['DELETE'])
-def delete_event(index): 
-    events.pop(index)
-    return 'None', 200
+@app.route('/events/<id>', methods=['DELETE'])
+def delete_event(id): 
+    Event.objects.get(id=id).delete()
+    return '', 200
 
-
-app.run()
+if __name__ == '__main__':
+    app.run()
