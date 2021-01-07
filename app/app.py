@@ -2,12 +2,13 @@ from flask import Flask, jsonify, request, Response
 from db.db import initialize_db
 from db.models import Event
 from type_data import EventKind, EventComponentTiming , PerformanceEvent
+import json
 
 app = Flask(__name__)
 app.debug = True
 
 app.config['MONGODB_SETTINGS'] = {
-    'host' : ''
+    'host' : 'mongodb+srv://techyield:techyield@nwboardcluster.frbft.mongodb.net/test?retryWrites=true&w=majority'
 }
 
 initialize_db(app)
@@ -21,7 +22,7 @@ def events():
 def add_event():
     body = request.get_json()
     event =  Event(**body).save()    
-    return {'id': event.id}, 200
+    return jsonify(event), 200
 
 @app.route('/events/<id>', methods=['PUT'])
 def update_event(id): 
