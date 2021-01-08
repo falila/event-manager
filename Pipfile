@@ -10,6 +10,7 @@ Flask-RESTful = "*"
 Flask-Bcrypt = "*"
 Flask-JWT-Extended = "*"
 python-dotenv = "*"
+flask-mail = "*"
 
 [dev-packages]
 
